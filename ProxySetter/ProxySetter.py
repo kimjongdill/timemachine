@@ -1,5 +1,6 @@
 import requests
 from urllib.parse import urlencode
+from bs4 import BeautifulSoup
 
 PROXY_SETTINGS_URL = "http://web.archive.org/"
 
@@ -24,4 +25,9 @@ class ProxySetter:
         if response.reason != "OK":
             raise Exception("Server did not accept date setting")       
 
-        print(response)
+        soup = BeautifulSoup(response.text, "html.parser")
+        dateInputFields = soup.find(attrs={"name": "date"})
+        
+        confirmedDate = dateInputFields['value']
+        
+        return confirmedDate
